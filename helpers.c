@@ -51,7 +51,6 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
 // Reflect image horizontally
 void reflect(int height, int width, RGBTRIPLE image[height][width])
 {
-    puts("r");
     for (int i = 0; i < height; i++)
     {
         //change the j to "width-j"

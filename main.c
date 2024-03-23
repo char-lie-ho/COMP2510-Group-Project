@@ -8,9 +8,6 @@ int main() {
     BITMAPFILEHEADER bmp_header;
     BITMAPV5HEADER dib_header;
     uint8_t *pixels = NULL;
-    uint32_t row_size;
-    uint32_t padding_size;
-    uint32_t padded_row_size;
 
     //TODO: use helper function to ask user the input and output file name
     char filename[] = "../image/cat.bmp";
@@ -38,42 +35,33 @@ int main() {
         return 1;
     }
 
-    // Calculate row size in bytes (including padding)
-    row_size = dib_header.bV5Width * 3;
-    padding_size = (4 - (row_size % 4)) % 4;
-    padded_row_size = row_size + padding_size;
+    // Determine padding for scanlines
+    int padding = (4 - (dib_header.bV5Width * sizeof(RGBTRIPLE)) % 4) % 4;
 
-    // Allocate memory for pixel data
-    size_t pixel_count = dib_header.bV5Height * padded_row_size;
-    pixels = (uint8_t *) malloc(pixel_count);
-    if (!pixels) {
-        printf("Error allocating memory\n");
+
+    RGBTRIPLE(*image)[dib_header.bV5Width] = calloc(dib_header.bV5Height, dib_header.bV5Width * sizeof(RGBTRIPLE));
+    if (image == NULL) {
+        printf("Not enough memory to store image.\n");
         fclose(inputFile);
-        return 1;
+        free(image);
+        return 7;
     }
 
-    // Read pixel data
-    if (fread(pixels, sizeof(uint8_t), pixel_count, inputFile) != pixel_count) {
-        printf("Error reading pixel data\n");
-        fclose(inputFile);
-        free(pixels);
-        return 1;
+    // Iterate over infile's scanlines
+    for (int i = 0; i < dib_header.bV5Height; i++) {
+        // Read row into pixel array
+        fread(image[i], sizeof(RGBTRIPLE), dib_header.bV5Width, inputFile);
+
+        // Skip over padding
+        fseek(inputFile, padding, SEEK_CUR);
     }
+
+    //TODO- update the method selection, using witch case
+    grayscale(dib_header.bV5Height, dib_header.bV5Width, image);
+//    sepia(dib_header.bV5Height,  dib_header.bV5Width, image);
 
     // Close the input inputFile
     fclose(inputFile);
-
-    // Convert to grayscale
-    for (size_t i = 0; i < pixel_count; i += 3) {
-        // Grayscale value is the average of the RGB components
-        uint8_t r = pixels[i];
-        uint8_t g = pixels[i + 1];
-        uint8_t b = pixels[i + 2];
-        uint8_t grayscale = (uint8_t) ((r + g + b) / 3);
-        pixels[i] = grayscale;
-        pixels[i + 1] = grayscale;
-        pixels[i + 2] = grayscale;
-    }
 
     // Open the output BMP file in binary mode
     outputFile = fopen(output_filename, "wb");
@@ -91,18 +79,21 @@ int main() {
 
 
     // Write the modified pixel data to the output file
-    if (fwrite(pixels, sizeof(uint8_t), pixel_count, outputFile) != pixel_count) {
-        printf("Error writing pixel data\n");
-        fclose(outputFile);
-        free(pixels);
-        return 1;
+    for (int i = 0; i < dib_header.bV5Height; i++) {
+        // Write row to outfile
+        fwrite(image[i], sizeof(RGBTRIPLE), dib_header.bV5Width, outputFile);
+
+        // Write padding at end of row
+        for (int k = 0; k < padding; k++) {
+            fputc(0x00, outputFile);
+        }
     }
 
     // Close the output file
     fclose(outputFile);
 
-    // Free allocated memory
-    free(pixels);
+    // Free memory for image
+    free(image);
 
     return 0;
 }
