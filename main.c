@@ -2,22 +2,19 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "helpers.h"
-#define FULL_HEADER_SIZE 138
 
 int main() {
     FILE *inputFile, *outputFile;
-
-    BITMAPV5HEADER bmp_header;
+    BITMAPFILEHEADER bmp_header;
+    BITMAPV5HEADER dib_header;
     uint8_t *pixels = NULL;
     uint32_t row_size;
     uint32_t padding_size;
     uint32_t padded_row_size;
-    uint8_t fullHeader[FULL_HEADER_SIZE];
 
     //TODO: use helper function to ask user the input and output file name
     char filename[] = "../image/cat.bmp";
     char output_filename[] = "../image/cat-new.bmp";
-
 
     // Open the BMP inputFile in binary mode
     inputFile = fopen(filename, "rb");
@@ -28,29 +25,26 @@ int main() {
     }
 
     // Obtain the Bitmap File header and DIB header(V5)
-    if (fread(fullHeader, sizeof(uint8_t), FULL_HEADER_SIZE, inputFile) != FULL_HEADER_SIZE) {
+    if (fread(&bmp_header, sizeof(BITMAPFILEHEADER), 1, inputFile) != 1) {
         printf("Error reading BMP header\n");
         fclose(inputFile);
         return 1;
     }
 
-    // Move to the location of the BITMAPV5HEADER structure
-    fseek(inputFile, sizeof(BITMAPFILEHEADER), SEEK_SET);
-
     // Read the BITMAPV5HEADER structure
-    if (fread(&bmp_header, sizeof(BITMAPV5HEADER), 1, inputFile) != 1) {
-        printf("Error reading BMP header\n");
+    if (fread(&dib_header, sizeof(BITMAPV5HEADER), 1, inputFile) != 1) {
+        printf("Error reading DIB header\n");
         fclose(inputFile);
         return 1;
     }
 
     // Calculate row size in bytes (including padding)
-    row_size = bmp_header.bV5Width * 3;
+    row_size = dib_header.bV5Width * 3;
     padding_size = (4 - (row_size % 4)) % 4;
     padded_row_size = row_size + padding_size;
 
     // Allocate memory for pixel data
-    size_t pixel_count = bmp_header.bV5Height * padded_row_size;
+    size_t pixel_count = dib_header.bV5Height * padded_row_size;
     pixels = (uint8_t *) malloc(pixel_count);
     if (!pixels) {
         printf("Error allocating memory\n");
@@ -89,12 +83,12 @@ int main() {
         return 1;
     }
 
-    // Write the BMP header to the output file
-    if (fwrite(fullHeader, sizeof(uint8_t), 138, outputFile) != 138) {
-        printf("Error writing BMP header\n");
-        free(pixels);
-        return 1;
-    }
+    // Write bmp header to output file
+    fwrite(&bmp_header, sizeof(BITMAPFILEHEADER), 1, outputFile);
+
+    // Write dib header to output file
+    fwrite(&dib_header, sizeof(BITMAPV5HEADER), 1, outputFile);
+
 
     // Write the modified pixel data to the output file
     if (fwrite(pixels, sizeof(uint8_t), pixel_count, outputFile) != pixel_count) {
