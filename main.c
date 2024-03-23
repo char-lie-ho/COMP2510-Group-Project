@@ -7,7 +7,6 @@ int main() {
     FILE *inputFile, *outputFile;
     BITMAPFILEHEADER bmp_header;
     BITMAPV5HEADER dib_header;
-    uint8_t *pixels = NULL;
 
     //TODO: use helper function to ask user the input and output file name
     char filename[] = "../image/cat.bmp";
@@ -35,39 +34,45 @@ int main() {
         return 1;
     }
 
+    int width = dib_header.bV5Width;
+    int height = dib_header.bV5Height;
+
     // Determine padding for scanlines
-    int padding = (4 - (dib_header.bV5Width * sizeof(RGBTRIPLE)) % 4) % 4;
+    int padding = (4 - (width * sizeof(RGBTRIPLE)) % 4) % 4;
 
-
-    RGBTRIPLE(*image)[dib_header.bV5Width] = calloc(dib_header.bV5Height, dib_header.bV5Width * sizeof(RGBTRIPLE));
+    // Allocate memory for image
+    RGBTRIPLE(*image)[width] = calloc(height, width * sizeof(RGBTRIPLE));
     if (image == NULL) {
         printf("Not enough memory to store image.\n");
         fclose(inputFile);
-        free(image);
-        return 7;
+        return 1;
     }
 
-    // Iterate over infile's scanlines
-    for (int i = 0; i < dib_header.bV5Height; i++) {
+    // Read image data
+    for (int i = 0; i < height; i++) {
         // Read row into pixel array
-        fread(image[i], sizeof(RGBTRIPLE), dib_header.bV5Width, inputFile);
+        fread(image[i], sizeof(RGBTRIPLE), width, inputFile);
 
         // Skip over padding
         fseek(inputFile, padding, SEEK_CUR);
     }
 
-    //TODO- update the method selection, using witch case
-    grayscale(dib_header.bV5Height, dib_header.bV5Width, image);
-//    sepia(dib_header.bV5Height,  dib_header.bV5Width, image);
+    // TODO: Perform image processing operations here, using witch case
 
-    // Close the input inputFile
+//    grayscale(height, width, image);
+    reflect(height, width, image);
+//    blur(height, width, image);   // NOT FUNCTIONAL FOR NOW
+//    sepia(height,  width, image);
+
+    // Close the input file
     fclose(inputFile);
 
     // Open the output BMP file in binary mode
     outputFile = fopen(output_filename, "wb");
     if (!outputFile) {
         printf("Error opening file %s\n", output_filename);
-        free(pixels);
+        fclose(outputFile);
+        free(image);
         return 1;
     }
 
@@ -77,11 +82,10 @@ int main() {
     // Write dib header to output file
     fwrite(&dib_header, sizeof(BITMAPV5HEADER), 1, outputFile);
 
-
     // Write the modified pixel data to the output file
-    for (int i = 0; i < dib_header.bV5Height; i++) {
-        // Write row to outfile
-        fwrite(image[i], sizeof(RGBTRIPLE), dib_header.bV5Width, outputFile);
+    for (int i = 0; i < height; i++) {
+        // Write row to output file
+        fwrite(image[i], sizeof(RGBTRIPLE), width, outputFile);
 
         // Write padding at end of row
         for (int k = 0; k < padding; k++) {
