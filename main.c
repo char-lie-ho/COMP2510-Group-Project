@@ -9,8 +9,8 @@ int main() {
     BITMAPV5HEADER dib_header;
 
     //TODO: use helper function to ask user the input and output file name
-    char filename[] = "../image/cat.bmp";
-    char output_filename[] = "../image/cat-new.bmp";
+    char filename[] = "../image/sky.bmp";
+    char output_filename[] = "../image/sky-new.bmp";
 
     // Open the BMP inputFile in binary mode
     inputFile = fopen(filename, "rb");
@@ -37,6 +37,8 @@ int main() {
     int width = dib_header.bV5Width;
     int height = dib_header.bV5Height;
 
+    printf("width: %d, height: %d", width, height);
+
     // Determine padding for scanlines
     int padding = (4 - (width * sizeof(RGBTRIPLE)) % 4) % 4;
 
@@ -60,8 +62,8 @@ int main() {
     // TODO: Perform image processing operations here, using witch case
 
 //    grayscale(height, width, image);
-    reflect(height, width, image);
-//    blur(height, width, image);   // NOT FUNCTIONAL FOR NOW
+//    reflect(height, width, image);
+    blur(height, width, image);
 //    sepia(height,  width, image);
 
     // Close the input file
