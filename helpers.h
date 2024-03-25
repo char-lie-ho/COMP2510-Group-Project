@@ -11,3 +11,22 @@ void reflect(int height, int width, RGBTRIPLE image[height][width]);
 
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width]);
+
+// Reflect image horizontally
+
+
+// invert colour
+
+
+// red / blue / green filter
+// one interesting idea is to include all filter in the same, bottom 1/3 is red, middle is blue....
+
+
+// combine 2 same size image together, image blend
+
+
+// change brightness, saturation, hue
+
+
+// rotation, can be tricky! have to alter the header as well
+

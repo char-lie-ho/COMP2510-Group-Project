@@ -68,7 +68,7 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
-    // Dynamically allocate memory for the temp array
+    // Dynamically allocate memory for the temp array, have to use malloc to prevent stack overflow
     RGBTRIPLE (*temp)[width] = malloc(height * sizeof(RGBTRIPLE[width]));
     if (temp == NULL)
     {
@@ -85,6 +85,7 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
             float totalR = 0, totalG = 0, totalB = 0;
 
             // Create a 3x3 matrix around the current pixel
+            // Change the for loop bound below to change the range of blur
             for (int r = -1; r <= 1; r++)
             {
                 for (int c = -1; c <= 1; c++)
