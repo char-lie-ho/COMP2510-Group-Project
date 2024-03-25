@@ -1,3 +1,4 @@
+#include <malloc.h>
 #include "helpers.h"
 #include "math.h"
 #include "stdio.h"
@@ -15,7 +16,6 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
             image[i][j].rgbtGreen = rgb;
         }
     }
-    return;
 }
 
 // Convert image to sepia
@@ -45,7 +45,6 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
             image[i][j].rgbtGreen = sG;
         }
     }
-    return;
 }
 
 // Reflect image horizontally
@@ -63,36 +62,38 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
             image[i][width - 1 - j] = temp;
         }
     }
-    // No need to return anything as the changes are done in-place
-    return;
 }
 
 
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width])
-//loop throught each pixel in the original image
-//create a 3*3 matrix and a temp image
-//count how many neighbour pixel in the matrix
-//sum each color channel and divided by count
-//replace the temp image with the original image
 {
-    RGBTRIPLE temp[height][width];
+    // Dynamically allocate memory for the temp array
+    RGBTRIPLE (*temp)[width] = malloc(height * sizeof(RGBTRIPLE[width]));
+    if (temp == NULL)
+    {
+        printf("Error: Not enough memory to store temporary image.\n");
+        return;
+    }
+
+    // Loop through each pixel in the original image
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
             int count = 0;
-            int rowCoor[] = {i - 1, i, i + 1};
-            int colCoor[] = {j - 1, j, j + 1};
             float totalR = 0, totalG = 0, totalB = 0;
 
-            for (int r = 0; r < 3; r++)
+            // Create a 3x3 matrix around the current pixel
+            for (int r = -1; r <= 1; r++)
             {
-                for (int c = 0; c < 3; c++)
+                for (int c = -1; c <= 1; c++)
                 {
-                    int curRow = rowCoor[r];
-                    int curCol = colCoor[c];
-                    if (curRow >= 0 && curRow < height && curCol >= 0 && curCol < width) //check if it is inbound
+                    int curRow = i + r;
+                    int curCol = j + c;
+
+                    // Check if the current pixel is within bounds
+                    if (curRow >= 0 && curRow < height && curCol >= 0 && curCol < width)
                     {
                         count++;
                         RGBTRIPLE pixel = image[curRow][curCol];
@@ -100,14 +101,17 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
                         totalG += pixel.rgbtGreen;
                         totalB += pixel.rgbtBlue;
                     }
-
-                    temp[i][j].rgbtRed = round(totalR / count);
-                    temp[i][j].rgbtGreen = round(totalG / count);
-                    temp[i][j].rgbtBlue = round(totalB / count);
                 }
             }
+
+            // Calculate the average color values for the surrounding pixels
+            temp[i][j].rgbtRed = round(totalR / count);
+            temp[i][j].rgbtGreen = round(totalG / count);
+            temp[i][j].rgbtBlue = round(totalB / count);
         }
     }
+
+    // Copy the blurred image from temp to the original image
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
@@ -115,5 +119,7 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
             image[i][j] = temp[i][j];
         }
     }
-    return;
+
+    free(temp);
 }
+
