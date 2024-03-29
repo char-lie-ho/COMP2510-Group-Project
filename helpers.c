@@ -4,7 +4,7 @@
 #include "stdio.h"
 
 // Convert image to grayscale
-void grayscale(int height, int width, RGBTRIPLE image[height][width])
+void grayscale(int height, int width, RGBTRIPLE ** image)
 {
     for (int i = 0; i < height; i++)
     {
@@ -19,7 +19,7 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
 }
 
 // Convert image to sepia
-void sepia(int height, int width, RGBTRIPLE image[height][width])
+void sepia(int height, int width, RGBTRIPLE ** image)
 {
     for (int i = 0; i < height; i++)
     {
@@ -48,7 +48,7 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
 }
 
 // Reflect image horizontally
-void reflect(int height, int width, RGBTRIPLE image[height][width])
+void reflect(int height, int width, RGBTRIPLE ** image)
 {
     // Iterate over each row in the image
     for (int i = 0; i < height; i++)
@@ -66,7 +66,7 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 
 
 // Blur image
-void blur(int height, int width, RGBTRIPLE image[height][width])
+void blur(int height, int width, RGBTRIPLE ** image)
 {
     // Dynamically allocate memory for the temp array, have to use malloc to prevent stack overflow
     RGBTRIPLE (*temp)[width] = malloc(height * sizeof(RGBTRIPLE[width]));
@@ -144,7 +144,7 @@ RGBTRIPLE generate_rgb(int red, int green, int blue)
     return rgb;
 }
 
-void brighten(int height, int width, RGBTRIPLE image[height][width], int unit)
+void brighten(int height, int width, RGBTRIPLE ** image, int unit)
 {
     // Loop through each pixel in the original image
     for (int i = 0; i < height; i++)
@@ -158,7 +158,7 @@ void brighten(int height, int width, RGBTRIPLE image[height][width], int unit)
     }
 }
 
-void saturate(int height, int width, RGBTRIPLE image[height][width], int unit)
+void saturate(int height, int width, RGBTRIPLE ** image, int unit)
 {
     // Loop through each pixel in the original image
     for (int i = 0; i < height; i++)
