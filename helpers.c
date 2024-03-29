@@ -124,3 +124,22 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
     free(temp);
 }
 
+BYTE constraint(int value)
+{
+    if (value < 0) {
+        return 0;
+    } else if (value > 255) {
+        return 255;
+    } else {
+        return value;
+    }
+}
+
+RGBTRIPLE generate_rgb(int red, int green, int blue)
+{
+    RGBTRIPLE rgb;
+    rgb.rgbtRed = constraint(red);
+    rgb.rgbtGreen = constraint(green);
+    rgb.rgbtBlue = constraint(blue);
+    return rgb;
+}
