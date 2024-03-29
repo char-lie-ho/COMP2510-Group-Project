@@ -9,8 +9,8 @@ int main() {
     BITMAPV5HEADER dib_header;
 
     //TODO: use helper function to ask user the input and output file name
-    char filename[] = "../image/sky.bmp";
-    char output_filename[] = "../image/sky-new.bmp";
+    char filename[] = "../image/cat.bmp";
+    char output_filename[] = "../image/cat-new.bmp";
 
     // Open the BMP inputFile in binary mode
     inputFile = fopen(filename, "rb");
@@ -63,9 +63,10 @@ int main() {
 
 //    grayscale(height, width, image);
 //    reflect(height, width, image);
-    blur(height, width, image);
+//    blur(height, width, image);
 //    sepia(height,  width, image);
-
+//    brighten(height, width, image, -50);
+    saturate(height, width, image, 50);
     // Close the input file
     fclose(inputFile);
 

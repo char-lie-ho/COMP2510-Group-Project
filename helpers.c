@@ -143,3 +143,17 @@ RGBTRIPLE generate_rgb(int red, int green, int blue)
     rgb.rgbtBlue = constraint(blue);
     return rgb;
 }
+
+void brighten(int height, int width, RGBTRIPLE image[height][width], int unit)
+{
+    // Loop through each pixel in the original image
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            image[i][j] = generate_rgb((int)image[i][j].rgbtRed + unit,
+                                      (int)image[i][j].rgbtGreen + unit,
+                                      (int)image[i][j].rgbtBlue + unit);
+        }
+    }
+}
