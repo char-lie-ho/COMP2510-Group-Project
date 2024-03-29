@@ -157,3 +157,17 @@ void brighten(int height, int width, RGBTRIPLE image[height][width], int unit)
         }
     }
 }
+
+void saturate(int height, int width, RGBTRIPLE image[height][width], int unit)
+{
+    // Loop through each pixel in the original image
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            image[i][j] = generate_rgb((int)image[i][j].rgbtRed * (100 + unit) / 100,
+                                       (int)image[i][j].rgbtGreen * (100 + unit) / 100,
+                                       (int)image[i][j].rgbtBlue * (100 + unit) / 100);
+        }
+    }
+}

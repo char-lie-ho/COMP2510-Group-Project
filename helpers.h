@@ -15,6 +15,9 @@ void blur(int height, int width, RGBTRIPLE image[height][width]);
 // Increase or decrease brightness
 void brighten(int height, int width, RGBTRIPLE image[height][width], int unit);
 
+// Increase or decrease saturation
+void saturate(int height, int width, RGBTRIPLE image[height][width], int unit);
+
 // Reflect image horizontally
 
 
