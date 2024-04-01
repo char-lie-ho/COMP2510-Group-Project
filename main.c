@@ -211,6 +211,11 @@ int main() {
             colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, COLOR[colorFilterChoice - 1]);
             snprintf(processedFilePath, sizeof(filePath), "../image/%s-colorFilter.bmp", fileName);
             break;
+        default:
+            printf("The number is not included in the options.\n");
+            printf("Try again.\n");
+            return -1;
+            break;
     }
     write_bmp(processedFilePath, bmp);
     free_bmp(bmp);
