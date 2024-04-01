@@ -73,10 +73,24 @@ void reflect(int height, int width, RGBTRIPLE ** image)
 }
 
 
+#include <stdio.h>
+
 // Blur image
 void blur(int height, int width, RGBTRIPLE ** image)
 {
-    // Dynamically allocate memory for the temp array, have to use malloc to prevent stack overflow
+    int intensity;
+    printf("Enter blur intensity (0-100): ");
+    scanf("%d", &intensity);
+
+    // Ensure the intensity is within the bounds
+    if (intensity < 0) intensity = 0;
+    if (intensity > 100) intensity = 100;
+
+    // Map intensity to matrix size, e.g., 0 -> 1, 100 -> 9
+    int matrixSize = 1 + (intensity / 12.5); // This maps 100 to 9, 50 to roughly 5, etc.
+    int offset = matrixSize / 2; // Used to determine the range of surrounding pixels
+
+    // Dynamically allocate memory for the temporary array
     RGBTRIPLE (*temp)[width] = malloc(height * sizeof(RGBTRIPLE[width]));
     if (temp == NULL)
     {
@@ -92,11 +106,10 @@ void blur(int height, int width, RGBTRIPLE ** image)
             int count = 0;
             float totalR = 0, totalG = 0, totalB = 0;
 
-            // Create a 3x3 matrix around the current pixel
-            // Change the for loop bound below to change the range of blur
-            for (int r = -1; r <= 1; r++)
+            // Create a matrix around the current pixel based on the blur intensity
+            for (int r = -offset; r <= offset; r++)
             {
-                for (int c = -1; c <= 1; c++)
+                for (int c = -offset; c <= offset; c++)
                 {
                     int curRow = i + r;
                     int curCol = j + c;
@@ -129,6 +142,7 @@ void blur(int height, int width, RGBTRIPLE ** image)
         }
     }
 
+    // Free the memory allocated for the temp image
     free(temp);
 }
 
