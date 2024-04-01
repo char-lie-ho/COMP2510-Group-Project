@@ -148,7 +148,7 @@ int main() {
     printf("1");
     snprintf(filePath, sizeof(filePath), "../image/%s.bmp", fileName);
     bmp = read_bmp(filePath);
-    printf("2");
+    printf("2\n");
     printf("Please choose a prefer way to process the picture(Enter a number):\n");
     printf("1.grayScale 2.reflect 3.sepia 4.brighten 5.blur 6.saturate 7.thresholdFilter 8.colorFilter\n");
     scanf("%d", &userChoice);
