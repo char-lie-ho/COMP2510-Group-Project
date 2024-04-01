@@ -122,7 +122,7 @@ void free_bmp(bmp_data bmp) {
 
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     double COLOR[COLOR_NUMBER][RGB_COLOR_VOLUME] = {
             {255, 0,   0}, //RED
             {255, 125, 0}, //ORANGE
@@ -134,24 +134,50 @@ int main() {
     };
 
     bmp_data bmp;
-    char fileName[100];
-    char filePath[100];
+//    char fileName[100];
+
     char processedFilePath[100];
     int userChoice;
     int brightenFactor;
     int saturateFactor;
     double thresholdFactor;
     int colorFilterChoice;
-
-    printf("Please enter the file name:\n");
-    scanf("%s", fileName);
-    printf("1");
-    snprintf(filePath, sizeof(filePath), "../image/%s.bmp", fileName);
+    if (argc != 3) {
+        printf("Usage: %s <image_file.bmp> grayscale\n", argv[0]);
+        return 1;
+    }
+    char* fileName = argv[1];
+    char* operation = argv[2];
+    char filePath[256];
+//    snprintf(filePath, sizeof(filePath), "../image/%s.bmp", fileName);
+    if (strchr(fileName, ':') != NULL) {
+        snprintf(filePath, sizeof(filePath), "%s", fileName);
+    } else {
+        snprintf(filePath, sizeof(filePath), "../image/%s", fileName);
+    }
     bmp = read_bmp(filePath);
-    printf("2");
-    printf("Please choose a prefer way to process the picture(Enter a number):\n");
-    printf("1.grayScale 2.reflect 3.sepia 4.brighten 5.blur 6.saturate 7.thresholdFilter 8.colorFilter\n");
-    scanf("%d", &userChoice);
+    if (!bmp.image) {
+        fprintf(stderr, "Failed to load BMP file.\n");
+        return 1;
+    }
+    if (strcmp(operation, "grayscale") == 0) {
+        grayscale(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image);
+    } else {
+        fprintf(stderr, "Unsupported operation '%s'. Currently, only 'grayscale' is supported.\n", operation);
+        free_bmp(bmp);
+        return 1;
+    }
+    snprintf(processedFilePath, sizeof(filePath), "../image/%s-grayscale.bmp", fileName);
+
+//    printf("Please enter the file name:\n");
+//    scanf("%s", fileName);
+//    printf("1");
+//    snprintf(filePath, sizeof(filePath), "../image/%s.bmp", fileName);
+//    bmp = read_bmp(filePath);
+//    printf("2");
+//    printf("Please choose a prefer way to process the picture(Enter a number):\n");
+//    printf("1.grayScale 2.reflect 3.sepia 4.brighten 5.blur 6.saturate 7.thresholdFilter 8.colorFilter\n");
+//    scanf("%d", &userChoice);
 
     switch (userChoice) {
         case 1:
