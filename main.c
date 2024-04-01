@@ -222,33 +222,4 @@ int main() {
     }
     write_bmp(processedFilePath, bmp);
     free_bmp(bmp);
-
-
-//    bmp = read_bmp("../image/sky.bmp");
-//    blur(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image);
-//    write_bmp("../image/sky-blur.bmp", bmp);
-//    free_bmp(bmp);
-//
-//    bmp = read_bmp("../image/sky.bmp");
-//    thresholdFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 0.5);
-//    write_bmp("../image/sky-thresholdFilter.bmp", bmp);
-//    free_bmp(bmp);
-//
-//    bmp = read_bmp("../image/cat.bmp");
-//    brighten(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 50);
-//    write_bmp("../image/cat-brighter.bmp", bmp);
-//    free_bmp(bmp);
-//
-//
-//    bmp = read_bmp("../image/cat.bmp");
-//    brighten(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, -50);
-//    write_bmp("../image/cat-dimmer.bmp", bmp);
-//    free_bmp(bmp);
-//
-//
-//    bmp = read_bmp("../image/cat.bmp");
-//    saturate(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 20);
-//    write_bmp("../image/cat-saturater.bmp", bmp);
-//    free_bmp(bmp);
-
 }
