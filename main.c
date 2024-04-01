@@ -181,7 +181,7 @@ int main() {
             break;
         case 6:
             printf("Enter a positive number to change the saturation:\n");
-            while (scanf("%d", &saturateFactor) != 1 || !isdigit(saturateFactor)) {
+            while (scanf("%d", &saturateFactor) != 1 ) {
                 printf("It is not an integer, try again:\n");
                 while (getchar() != '\n');
             }
