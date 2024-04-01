@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "helpers.h"
 
+
+
 typedef struct {
     BITMAPFILEHEADER bmp_header;
     BITMAPV5HEADER dib_header;
@@ -143,10 +145,53 @@ int main()
     write_bmp("../image/cat-brighter.bmp", bmp);
     free_bmp(bmp);
 
+    double RED[] = {255, 0, 0};
+    double ORANGE[] = {255, 125, 0};
+    double YELLOW[] = {255, 255, 0};
+    double GREEN[] = {0, 255, 0};
+    double CYAN[] = {0, 255, 255};
+    double BLUE[] = {0, 125, 255};
+    double PURPLE[] = {125, 0, 255};
+    bmp = read_bmp("../image/cat.bmp");
+    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, RED);
+    write_bmp("../image/cat-RED.bmp", bmp);
+    free_bmp(bmp);
+
+    bmp = read_bmp("../image/cat.bmp");
+    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, ORANGE);
+    write_bmp("../image/cat-ORANGE.bmp", bmp);
+    free_bmp(bmp);
+
+    bmp = read_bmp("../image/cat.bmp");
+    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, YELLOW);
+    write_bmp("../image/cat-YELLOW.bmp", bmp);
+    free_bmp(bmp);
+
+    bmp = read_bmp("../image/cat.bmp");
+    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, GREEN);
+    write_bmp("../image/cat-GREEN.bmp", bmp);
+    free_bmp(bmp);
+
+    bmp = read_bmp("../image/cat.bmp");
+    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, CYAN);
+    write_bmp("../image/cat-CYAN.bmp", bmp);
+    free_bmp(bmp);
+
+    bmp = read_bmp("../image/cat.bmp");
+    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, BLUE);
+    write_bmp("../image/cat-BLUE.bmp", bmp);
+    free_bmp(bmp);
+
+    bmp = read_bmp("../image/cat.bmp");
+    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, PURPLE);
+    write_bmp("../image/cat-PURPLE.bmp", bmp);
+    free_bmp(bmp);
+
     bmp = read_bmp("../image/cat.bmp");
     brighten(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, -50);
     write_bmp("../image/cat-dimmer.bmp", bmp);
     free_bmp(bmp);
+
 
     bmp = read_bmp("../image/cat.bmp");
     saturate(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 20);

@@ -62,3 +62,7 @@ typedef struct
     BYTE  rgbtGreen;
     BYTE  rgbtRed;
 } RGBTRIPLE;
+
+
+
+

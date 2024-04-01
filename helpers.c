@@ -3,6 +3,14 @@
 #include "math.h"
 #include "stdio.h"
 
+#define RED ((Color){255, 0, 0})
+#define ORANGE {255, 165, 0}
+#define YELLOW {255, 255, 0}
+#define GREEN {0, 255, 0}
+#define CYAN {0, 255, 255}
+#define BLUE {0, 0, 255}
+#define PURPLE {128, 0, 128}
+
 // Convert image to grayscale
 void grayscale(int height, int width, RGBTRIPLE ** image)
 {
@@ -188,6 +196,26 @@ void thresholdFilter(int height, int width, RGBTRIPLE ** image, double threshold
                 image[i][j].rgbtGreen = 255;
             }
 
+        }
+    }
+}
+
+//colorRGB is a double array with 3 elements, representing 3 rgb colors
+void colorFilter(int height, int width, RGBTRIPLE **image, double const colorRGB[])
+{
+    double redFactor = 1 + colorRGB[0] / 255;
+    double greenFactor = 1 + colorRGB[1] / 255;
+    double blueFactor = 1 + colorRGB[2] / 255;
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            int newRed = (int)(image[i][j].rgbtRed * redFactor);
+            int newGreen = (int)(image[i][j].rgbtGreen * greenFactor);
+            int newBlue = (int)(image[i][j].rgbtBlue * blueFactor);
+            image[i][j].rgbtRed = (BYTE)constraint(newRed);
+            image[i][j].rgbtGreen = (BYTE)constraint(newGreen);
+            image[i][j].rgbtBlue = (BYTE)constraint(newBlue);
         }
     }
 }
