@@ -1,4 +1,6 @@
 #include <malloc.h>
+#include <string.h>
+#include <ctype.h>
 #include "helpers.h"
 #include "math.h"
 #include "stdio.h"
@@ -73,22 +75,58 @@ void reflect(int height, int width, RGBTRIPLE ** image)
 }
 
 
-#include <stdio.h>
-
 // Blur image
-void blur(int height, int width, RGBTRIPLE ** image)
-{
-    int intensity;
-    printf("Enter blur intensity (0-100): ");
-    scanf("%d", &intensity);
+void blur(int height, int width, RGBTRIPLE **image) {
+    int intensity = 0;
+    char input[10]; // Buffer for the input
 
-    // Ensure the intensity is within the bounds
-    if (intensity < 0) intensity = 0;
-    if (intensity > 100) intensity = 100;
+    while (1) {
+        printf("Enter blur intensity (1 to 5): ");
+//        scanf("%d", &intensity);
+        if (scanf("%d", &intensity) > 1 || intensity < 1 || intensity > 5) {
+            printf("invalid, try again\n");
+            while (getchar() != '\n');
+//            scanf("%d", &intensity);
+        } else {
+            break;
+        }
+        // Clear input buffer to ensure there are no residual characters
+//        while (getchar() != '\n' && !feof(stdin) && !ferror(stdin));
+//
+//        if (fgets(input, sizeof(input), stdin) == NULL) {
+//            continue; // If reading input failed, try again
+//        }
+//
+//        // Remove newline character if present
+//        input[strcspn(input, "\n")] = 0;
+//
+//        int isValid = 1; // Assume the input is valid
+//
+//        // Check if all characters in input are digits
+//        for (char *p = input; *p; p++) {
+//            if (!isdigit(*p)) {
+//                isValid = 0; // Found a non-digit character
+//                break;
+//            }
+//        }
+//
+//        if (isValid) {
+//            intensity = atoi(input); // Convert input to number
+//
+//            if (intensity >= 1 && intensity <= 5) {
+//                break; // Valid intensity entered, exit the loop
+//            } else (intensity <= 1 && intensity >= 5); {
+//                printf("Invalid input. Please enter a number between 1 and 5.\n");
+//            }
+//        } else {
+//            printf("Invalid input. Please enter a number between 1 and 5.\n");
+//        }
 
-    // Map intensity to matrix size, e.g., 0 -> 1, 100 -> 9
-    int matrixSize = 1 + (intensity / 12.5); // This maps 100 to 9, 50 to roughly 5, etc.
-    int offset = matrixSize / 2; // Used to determine the range of surrounding pixels
+    }// end of function
+
+
+    // Map the intensity to a range value. Intensity is scaled by 10.
+    int range = intensity * 10;
 
     // Dynamically allocate memory for the temporary array
     RGBTRIPLE (*temp)[width] = malloc(height * sizeof(RGBTRIPLE[width]));
@@ -103,33 +141,33 @@ void blur(int height, int width, RGBTRIPLE ** image)
     {
         for (int j = 0; j < width; j++)
         {
+            long totalR = 0, totalG = 0, totalB = 0;
             int count = 0;
-            float totalR = 0, totalG = 0, totalB = 0;
 
-            // Create a matrix around the current pixel based on the blur intensity
-            for (int r = -offset; r <= offset; r++)
+            // Adjust the loop based on the range
+            for (int r = -range; r <= range; r++)
             {
-                for (int c = -offset; c <= offset; c++)
+                for (int c = -range; c <= range; c++)
                 {
-                    int curRow = i + r;
-                    int curCol = j + c;
+                    int currentRow = i + r;
+                    int currentCol = j + c;
 
-                    // Check if the current pixel is within bounds
-                    if (curRow >= 0 && curRow < height && curCol >= 0 && curCol < width)
+                    // Check if the current pixel is within bounds and accumulate values
+                    if (currentRow >= 0 && currentRow < height && currentCol >= 0 && currentCol < width)
                     {
-                        count++;
-                        RGBTRIPLE pixel = image[curRow][curCol];
+                        RGBTRIPLE pixel = image[currentRow][currentCol];
                         totalR += pixel.rgbtRed;
                         totalG += pixel.rgbtGreen;
                         totalB += pixel.rgbtBlue;
+                        count++;
                     }
                 }
             }
 
             // Calculate the average color values for the surrounding pixels
-            temp[i][j].rgbtRed = round(totalR / count);
-            temp[i][j].rgbtGreen = round(totalG / count);
-            temp[i][j].rgbtBlue = round(totalB / count);
+            temp[i][j].rgbtRed = count > 0 ? round((float)totalR / count) : image[i][j].rgbtRed;
+            temp[i][j].rgbtGreen = count > 0 ? round((float)totalG / count) : image[i][j].rgbtGreen;
+            temp[i][j].rgbtBlue = count > 0 ? round((float)totalB / count) : image[i][j].rgbtBlue;
         }
     }
 
