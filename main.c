@@ -149,12 +149,15 @@ int main() {
     snprintf(filePath, sizeof(filePath), "../image/%s.bmp", fileName);
     bmp = read_bmp(filePath);
     printf("2\n");
-    printf("Please choose a prefer way to process the picture(Enter a number):\n");
-    printf("1.grayScale 2.reflect 3.sepia 4.brighten 5.blur 6.saturate 7.thresholdFilter 8.colorFilter\n");
-    scanf("%d", &userChoice);
-    if  (!isdigit(userChoice)){
-        printf("Invalid code. Try again.");
-        return -1 ;
+    while (1) {
+        printf("Please choose a preferred way to process the picture (Enter a number):\n");
+        printf("1.grayScale 2.reflect 3.sepia 4.brighten 5.blur 6.saturate 7.thresholdFilter 8.colorFilter\n");
+        if (scanf("%d", &userChoice) != 1 || userChoice < 1 || userChoice > 8) {
+            printf("Invalid code. Try again.\n");
+            while (getchar() != '\n');
+        } else {
+            break;
+        }
     }
 
     switch (userChoice) {
