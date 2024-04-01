@@ -89,37 +89,6 @@ void blur(int height, int width, RGBTRIPLE **image) {
             break;
         }
 
-//        while (getchar() != '\n' && !feof(stdin) && !ferror(stdin));
-//
-//        if (fgets(input, sizeof(input), stdin) == NULL) {
-//            continue; // If reading input failed, try again
-//        }
-//
-//        // Remove newline character if present
-//        input[strcspn(input, "\n")] = 0;
-//
-//        int isValid = 1; // Assume the input is valid
-//
-//        // Check if all characters in input are digits
-//        for (char *p = input; *p; p++) {
-//            if (!isdigit(*p)) {
-//                isValid = 0; // Found a non-digit character
-//                break;
-//            }
-//        }
-//
-//        if (isValid) {
-//            intensity = atoi(input); // Convert input to number
-//
-//            if (intensity >= 1 && intensity <= 5) {
-//                break; // Valid intensity entered, exit the loop
-//            } else (intensity <= 1 && intensity >= 5); {
-//                printf("Invalid input. Please enter a number between 1 and 5.\n");
-//            }
-//        } else {
-//            printf("Invalid input. Please enter a number between 1 and 5.\n");
-//        }
-
     }// end of function
 
 
