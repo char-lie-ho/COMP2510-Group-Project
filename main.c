@@ -43,7 +43,7 @@ bmp_data read_bmp(char *file_name) {
     int width = bmp.dib_header.bV5Width;
     int height = bmp.dib_header.bV5Height;
 
-    printf("width: %d, height: %d", width, height);
+    printf("width: %d, height: %d \n", width, height);
 
     // Determine padding for scanlines
     int padding = (4 - (width * sizeof(RGBTRIPLE)) % 4) % 4;
@@ -145,13 +145,11 @@ int main() {
 
     printf("Please enter the file name:\n");
     scanf("%s", fileName);
-    printf("1\n");
     snprintf(filePath, sizeof(filePath), "../image/%s.bmp", fileName);
     bmp = read_bmp(filePath);
-    printf("2\n");
     while (1) {
         printf("Please choose a preferred way to process the picture (Enter a number):\n");
-        printf("1.grayScale 2.reflect 3.sepia 4.brighten 5.blur 6.saturate 7.thresholdFilter 8.colorFilter\n");
+        printf("  1.grayScale 2.reflect 3.sepia 4.brighten 5.blur 6.saturate 7.thresholdFilter 8.colorFilter\n");
         if (scanf("%d", &userChoice) != 1 || userChoice < 1 || userChoice > 8) {
             printf("Invalid code. Try again.\n");
             while (getchar() != '\n');
