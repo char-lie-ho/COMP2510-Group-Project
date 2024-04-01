@@ -17,7 +17,7 @@ void brighten(int height, int width, RGBTRIPLE ** image, int unit);
 
 // Increase or decrease saturation
 void saturate(int height, int width, RGBTRIPLE ** image, int unit);
-
+void thresholdFilter(int height, int width, RGBTRIPLE ** image, double threshold);
 // Reflect image horizontally
 
 

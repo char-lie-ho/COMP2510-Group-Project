@@ -133,6 +133,11 @@ int main()
     write_bmp("../image/sky-blur.bmp", bmp);
     free_bmp(bmp);
 
+    bmp = read_bmp("../image/sky.bmp");
+    thresholdFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 0.5);
+    write_bmp("../image/sky-thresholdFilter.bmp", bmp);
+    free_bmp(bmp);
+
     bmp = read_bmp("../image/cat.bmp");
     brighten(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 50);
     write_bmp("../image/cat-brighter.bmp", bmp);

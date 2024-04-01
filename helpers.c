@@ -171,3 +171,23 @@ void saturate(int height, int width, RGBTRIPLE ** image, int unit)
         }
     }
 }
+
+//threshold is a double from 0.0 to 1.0
+void thresholdFilter(int height, int width, RGBTRIPLE ** image, double threshold){
+    double rbgThreshold = 255 * threshold;
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            int rgb = round((image[i][j].rgbtBlue + image[i][j].rgbtRed + image[i][j].rgbtGreen) / 3.0);
+            if (rgb < rbgThreshold) {
+                image[i][j].rgbtBlue = 0;
+                image[i][j].rgbtRed = 0;
+                image[i][j].rgbtGreen = 0;
+            } else {
+                image[i][j].rgbtBlue = 255;
+                image[i][j].rgbtRed = 255;
+                image[i][j].rgbtGreen = 255;
+            }
+
+        }
+    }
+}
