@@ -168,7 +168,7 @@ int main() {
             break;
         case 4:
             printf("Enter a positive number to brighten or a negative number to darken the picture(-255~255):\n");
-            while (scanf("%d", &brightenFactor) != 1 || !isdigit(brightenFactor)) {
+            while (scanf("%d", &brightenFactor) != 1) {
                 printf("It is not an integer, try again:\n");
                 while (getchar() != '\n');
             }
