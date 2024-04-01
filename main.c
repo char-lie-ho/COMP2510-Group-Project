@@ -2,16 +2,19 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "helpers.h"
+#include <string.h>
+#include <ctype.h>
 
-
+#define COLOR_NUMBER 7
+#define RGB_COLOR_VOLUME 13
 
 typedef struct {
     BITMAPFILEHEADER bmp_header;
     BITMAPV5HEADER dib_header;
-    RGBTRIPLE ** image;
+    RGBTRIPLE **image;
 } bmp_data;
 
-bmp_data read_bmp(char * file_name) {
+bmp_data read_bmp(char *file_name) {
     FILE *inputFile;
     bmp_data bmp = {0};
 
@@ -79,9 +82,9 @@ bmp_data read_bmp(char * file_name) {
     return bmp;
 }
 
-void write_bmp(char * file_name, bmp_data bmp) {
+void write_bmp(char *file_name, bmp_data bmp) {
     // Open the output BMP file in binary mode
-    FILE * outputFile = fopen(file_name, "wb");
+    FILE *outputFile = fopen(file_name, "wb");
     if (!outputFile) {
         printf("Error opening file %s\n", file_name);
         fclose(outputFile);
@@ -110,8 +113,7 @@ void write_bmp(char * file_name, bmp_data bmp) {
     fclose(outputFile);
 }
 
-void free_bmp(bmp_data bmp)
-{
+void free_bmp(bmp_data bmp) {
     // Free memory for image
     for (int i = 0; i < bmp.dib_header.bV5Height; i++) {
         free(bmp.image[i]);
@@ -119,83 +121,122 @@ void free_bmp(bmp_data bmp)
     free(bmp.image);
 
 }
-int main()
-{
-    // TODO: Perform image processing operations here, using witch case
 
-//    grayscale(height, width, image);
-//    reflect(height, width, image);
-//    sepia(height,  width, image);
-//    brighten(height, width, image, -50);
+int main() {
+    double COLOR[COLOR_NUMBER][RGB_COLOR_VOLUME] = {
+            {255, 0,   0}, //RED
+            {255, 125, 0}, //ORANGE
+            {255, 255, 0}, //YELLOW
+            {0,   255, 0}, //GREEN
+            {0,   255, 255}, //CYAN
+            {0,   125, 255}, //BLUE
+            {125, 0,   255} //PURPLE
+    };
 
     bmp_data bmp;
+    char fileName[100];
+    char filePath[100];
+    char processedFilePath[100];
+    int userChoice;
+    int brightenFactor;
+    int saturateFactor;
+    double thresholdFactor;
+    int colorFilterChoice;
 
-    bmp = read_bmp("../image/sky.bmp");
-    blur(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image);
-    write_bmp("../image/sky-blur.bmp", bmp);
+    printf("Please enter the file name:\n");
+    scanf("%s", fileName);
+    printf("1");
+    snprintf(filePath, sizeof(filePath), "../image/%s.bmp", fileName);
+    bmp = read_bmp(filePath);
+    printf("2");
+    printf("Please choose a prefer way to process the picture(Enter a number):\n");
+    printf("1.grayScale 2.reflect 3.sepia 4.brighten 5.blur 6.saturate 7.thresholdFilter 8.colorFilter\n");
+    scanf("%d", &userChoice);
+
+    switch (userChoice) {
+        case 1:
+            grayscale(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image);
+            snprintf(processedFilePath, sizeof(filePath), "../image/%s-grayscale.bmp", fileName);
+            break;
+        case 2:
+            reflect(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image);
+            snprintf(processedFilePath, sizeof(filePath), "../image/%s-reflect.bmp", fileName);
+            break;
+        case 3:
+            sepia(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image);
+            snprintf(processedFilePath, sizeof(filePath), "../image/%s-sepia.bmp", fileName);
+            break;
+        case 4:
+            printf("Enter a positive number to brighten or a negative number to darken the picture(-255~255):\n");
+            while (scanf("%d", &brightenFactor) != 1 || !isdigit(brightenFactor)) {
+                printf("It is not an integer, try again:\n");
+                while (getchar() != '\n');
+            }
+            brighten(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, brightenFactor);
+            snprintf(processedFilePath, sizeof(filePath), "../image/%s-brighten.bmp", fileName);
+            break;
+        case 5:
+            blur(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image);
+            snprintf(processedFilePath, sizeof(filePath), "../image/%s-blur.bmp", fileName);
+            break;
+        case 6:
+            printf("Enter a positive number to change the saturation:\n");
+            while (scanf("%d", &saturateFactor) != 1 || !isdigit(saturateFactor)) {
+                printf("It is not an integer, try again:\n");
+                while (getchar() != '\n');
+            }
+            saturate(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, saturateFactor);
+            snprintf(processedFilePath, sizeof(filePath), "../image/%s-saturate.bmp", fileName);
+            break;
+        case 7:
+            printf("Enter a decimal number from 0.0~1.0 to apply the threshold filter:\n");
+            while (scanf("%lf", &thresholdFactor) != 1 || thresholdFactor < 0.0 || thresholdFactor > 1.0) {
+                printf("Invalid input, try again:\n");
+                while (getchar() != '\n');
+            }
+            thresholdFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, thresholdFactor);
+            snprintf(processedFilePath, sizeof(filePath), "../image/%s-thresholdFilter.bmp", fileName);
+            break;
+        case 8:
+            printf("Choose a color filter:\n");
+            printf("1.RED 2.ORANGE 3.YELLOW 4.GREEN 5.CYAN 6.BLUE 7.PURPLE\n");
+            while (scanf("%d", &colorFilterChoice) != 1 || colorFilterChoice < 1 || colorFilterChoice > 7) {
+                printf("Invalid input, try again:\n");
+                while (getchar() != '\n');
+            }
+            colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, COLOR[colorFilterChoice - 1]);
+            snprintf(processedFilePath, sizeof(filePath), "../image/%s-colorFilter.bmp", fileName);
+            break;
+    }
+    write_bmp(processedFilePath, bmp);
     free_bmp(bmp);
 
-    bmp = read_bmp("../image/sky.bmp");
-    thresholdFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 0.5);
-    write_bmp("../image/sky-thresholdFilter.bmp", bmp);
-    free_bmp(bmp);
 
-    bmp = read_bmp("../image/cat.bmp");
-    brighten(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 50);
-    write_bmp("../image/cat-brighter.bmp", bmp);
-    free_bmp(bmp);
-
-    double RED[] = {255, 0, 0};
-    double ORANGE[] = {255, 125, 0};
-    double YELLOW[] = {255, 255, 0};
-    double GREEN[] = {0, 255, 0};
-    double CYAN[] = {0, 255, 255};
-    double BLUE[] = {0, 125, 255};
-    double PURPLE[] = {125, 0, 255};
-    bmp = read_bmp("../image/cat.bmp");
-    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, RED);
-    write_bmp("../image/cat-RED.bmp", bmp);
-    free_bmp(bmp);
-
-    bmp = read_bmp("../image/cat.bmp");
-    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, ORANGE);
-    write_bmp("../image/cat-ORANGE.bmp", bmp);
-    free_bmp(bmp);
-
-    bmp = read_bmp("../image/cat.bmp");
-    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, YELLOW);
-    write_bmp("../image/cat-YELLOW.bmp", bmp);
-    free_bmp(bmp);
-
-    bmp = read_bmp("../image/cat.bmp");
-    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, GREEN);
-    write_bmp("../image/cat-GREEN.bmp", bmp);
-    free_bmp(bmp);
-
-    bmp = read_bmp("../image/cat.bmp");
-    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, CYAN);
-    write_bmp("../image/cat-CYAN.bmp", bmp);
-    free_bmp(bmp);
-
-    bmp = read_bmp("../image/cat.bmp");
-    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, BLUE);
-    write_bmp("../image/cat-BLUE.bmp", bmp);
-    free_bmp(bmp);
-
-    bmp = read_bmp("../image/cat.bmp");
-    colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, PURPLE);
-    write_bmp("../image/cat-PURPLE.bmp", bmp);
-    free_bmp(bmp);
-
-    bmp = read_bmp("../image/cat.bmp");
-    brighten(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, -50);
-    write_bmp("../image/cat-dimmer.bmp", bmp);
-    free_bmp(bmp);
-
-
-    bmp = read_bmp("../image/cat.bmp");
-    saturate(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 20);
-    write_bmp("../image/cat-saturater.bmp", bmp);
-    free_bmp(bmp);
+//    bmp = read_bmp("../image/sky.bmp");
+//    blur(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image);
+//    write_bmp("../image/sky-blur.bmp", bmp);
+//    free_bmp(bmp);
+//
+//    bmp = read_bmp("../image/sky.bmp");
+//    thresholdFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 0.5);
+//    write_bmp("../image/sky-thresholdFilter.bmp", bmp);
+//    free_bmp(bmp);
+//
+//    bmp = read_bmp("../image/cat.bmp");
+//    brighten(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 50);
+//    write_bmp("../image/cat-brighter.bmp", bmp);
+//    free_bmp(bmp);
+//
+//
+//    bmp = read_bmp("../image/cat.bmp");
+//    brighten(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, -50);
+//    write_bmp("../image/cat-dimmer.bmp", bmp);
+//    free_bmp(bmp);
+//
+//
+//    bmp = read_bmp("../image/cat.bmp");
+//    saturate(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 20);
+//    write_bmp("../image/cat-saturater.bmp", bmp);
+//    free_bmp(bmp);
 
 }
