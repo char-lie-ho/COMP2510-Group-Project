@@ -82,15 +82,13 @@ void blur(int height, int width, RGBTRIPLE **image) {
 
     while (1) {
         printf("Enter blur intensity (1 to 5): ");
-//        scanf("%d", &intensity);
         if (scanf("%d", &intensity) > 1 || intensity < 1 || intensity > 5) {
             printf("invalid, try again\n");
             while (getchar() != '\n');
-//            scanf("%d", &intensity);
         } else {
             break;
         }
-        // Clear input buffer to ensure there are no residual characters
+
 //        while (getchar() != '\n' && !feof(stdin) && !ferror(stdin));
 //
 //        if (fgets(input, sizeof(input), stdin) == NULL) {
