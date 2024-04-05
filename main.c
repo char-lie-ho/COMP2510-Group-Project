@@ -212,6 +212,7 @@ int main() {
     free_bmp(bmp);
 
 
+
 //    bmp = read_bmp("../image/sky.bmp");
 //    blur(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image);
 //    write_bmp("../image/sky-blur.bmp", bmp);
