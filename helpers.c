@@ -211,7 +211,7 @@ void invert(int height, int width, RGBTRIPLE **image) {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
 
-            image[i][j].rgbtBlue = 255- image[i][j].rgbtBlue;
+            image[i][j].rgbtBlue = 255 - image[i][j].rgbtBlue;
             image[i][j].rgbtRed = 255 - image[i][j].rgbtRed;
             image[i][j].rgbtGreen = 255 - image[i][j].rgbtGreen;
         }

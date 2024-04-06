@@ -6,18 +6,17 @@
 // Adapted from http://msdn.microsoft.com/en-us/library/cc230309.aspx.
 // See https://en.wikipedia.org/wiki/C_data_types#stdint.h for more on stdint.h.
 
-typedef uint8_t  BYTE;
+typedef uint8_t BYTE;
 typedef uint32_t DWORD;
-typedef int32_t  LONG;
+typedef int32_t LONG;
 typedef uint16_t WORD;
 
-typedef struct
-{
-    WORD   bfType;
-    DWORD  bfSize;
-    WORD   bfReserved1;
-    WORD   bfReserved2;
-    DWORD  bfOffBits;
+typedef struct {
+    WORD bfType;
+    DWORD bfSize;
+    WORD bfReserved1;
+    WORD bfReserved2;
+    DWORD bfOffBits;
 } __attribute__((__packed__))
         BITMAPFILEHEADER;
 
@@ -49,11 +48,10 @@ typedef struct {
     DWORD bV5Reserved;
 } BITMAPV5HEADER;
 
-typedef struct
-{
-    BYTE  rgbtBlue;
-    BYTE  rgbtGreen;
-    BYTE  rgbtRed;
+typedef struct {
+    BYTE rgbtBlue;
+    BYTE rgbtGreen;
+    BYTE rgbtRed;
 } RGBTRIPLE;
 
 
