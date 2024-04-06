@@ -12,12 +12,9 @@
 #define PURPLE {128, 0, 128}
 
 // Convert image to grayscale
-void grayscale(int height, int width, RGBTRIPLE ** image)
-{
-    for (int i = 0; i < height; i++)
-    {
-        for (int j = 0; j < width; j++)
-        {
+void grayscale(int height, int width, RGBTRIPLE **image) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
             int rgb = round((image[i][j].rgbtBlue + image[i][j].rgbtRed + image[i][j].rgbtGreen) / 3.0);
             image[i][j].rgbtBlue = rgb;
             image[i][j].rgbtRed = rgb;
@@ -27,25 +24,19 @@ void grayscale(int height, int width, RGBTRIPLE ** image)
 }
 
 // Convert image to sepia
-void sepia(int height, int width, RGBTRIPLE ** image)
-{
-    for (int i = 0; i < height; i++)
-    {
-        for (int j = 0; j < width; j++)
-        {
+void sepia(int height, int width, RGBTRIPLE **image) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
             int sR = round(0.393 * image[i][j].rgbtRed + 0.769 * image[i][j].rgbtGreen + 0.189 * image[i][j].rgbtBlue);
             int sG = round(0.349 * image[i][j].rgbtRed + 0.686 * image[i][j].rgbtGreen + 0.168 * image[i][j].rgbtBlue);
             int sB = round(0.272 * image[i][j].rgbtRed + 0.534 * image[i][j].rgbtGreen + 0.131 * image[i][j].rgbtBlue);
-            if (sR > 255)
-            {
+            if (sR > 255) {
                 sR = 255;
             }
-            if (sG > 255)
-            {
+            if (sG > 255) {
                 sG = 255;
             }
-            if (sB > 255)
-            {
+            if (sB > 255) {
                 sB = 255;
             }
             image[i][j].rgbtBlue = sB;
@@ -56,14 +47,11 @@ void sepia(int height, int width, RGBTRIPLE ** image)
 }
 
 // Reflect image horizontally
-void reflect(int height, int width, RGBTRIPLE ** image)
-{
+void reflect(int height, int width, RGBTRIPLE **image) {
     // Iterate over each row in the image
-    for (int i = 0; i < height; i++)
-    {
+    for (int i = 0; i < height; i++) {
         // Iterate over each column in the row, but only up to half the width
-        for (int j = 0; j < width / 2; j++)
-        {
+        for (int j = 0; j < width / 2; j++) {
             // Swap the pixels across the vertical axis (left and right)
             RGBTRIPLE temp = image[i][j];
             image[i][j] = image[i][width - 1 - j];
@@ -95,31 +83,25 @@ void blur(int height, int width, RGBTRIPLE **image) {
 
     // Dynamically allocate memory for the temporary array
     RGBTRIPLE (*temp)[width] = malloc(height * sizeof(RGBTRIPLE[width]));
-    if (temp == NULL)
-    {
+    if (temp == NULL) {
         printf("Error: Not enough memory to store temporary image.\n");
         return;
     }
 
     // Loop through each pixel in the original image
-    for (int i = 0; i < height; i++)
-    {
-        for (int j = 0; j < width; j++)
-        {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
             long totalR = 0, totalG = 0, totalB = 0;
             int count = 0;
 
             // Adjust the loop based on the range
-            for (int r = -range; r <= range; r++)
-            {
-                for (int c = -range; c <= range; c++)
-                {
+            for (int r = -range; r <= range; r++) {
+                for (int c = -range; c <= range; c++) {
                     int currentRow = i + r;
                     int currentCol = j + c;
 
                     // Check if the current pixel is within bounds and accumulate values
-                    if (currentRow >= 0 && currentRow < height && currentCol >= 0 && currentCol < width)
-                    {
+                    if (currentRow >= 0 && currentRow < height && currentCol >= 0 && currentCol < width) {
                         RGBTRIPLE pixel = image[currentRow][currentCol];
                         totalR += pixel.rgbtRed;
                         totalG += pixel.rgbtGreen;
@@ -130,17 +112,15 @@ void blur(int height, int width, RGBTRIPLE **image) {
             }
 
             // Calculate the average color values for the surrounding pixels
-            temp[i][j].rgbtRed = count > 0 ? round((float)totalR / count) : image[i][j].rgbtRed;
-            temp[i][j].rgbtGreen = count > 0 ? round((float)totalG / count) : image[i][j].rgbtGreen;
-            temp[i][j].rgbtBlue = count > 0 ? round((float)totalB / count) : image[i][j].rgbtBlue;
+            temp[i][j].rgbtRed = count > 0 ? round((float) totalR / count) : image[i][j].rgbtRed;
+            temp[i][j].rgbtGreen = count > 0 ? round((float) totalG / count) : image[i][j].rgbtGreen;
+            temp[i][j].rgbtBlue = count > 0 ? round((float) totalB / count) : image[i][j].rgbtBlue;
         }
     }
 
     // Copy the blurred image from temp to the original image
-    for (int i = 0; i < height; i++)
-    {
-        for (int j = 0; j < width; j++)
-        {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
             image[i][j] = temp[i][j];
         }
     }
@@ -149,8 +129,7 @@ void blur(int height, int width, RGBTRIPLE **image) {
     free(temp);
 }
 
-BYTE constraint(int value)
-{
+BYTE constraint(int value) {
     if (value < 0) {
         return 0;
     } else if (value > 255) {
@@ -160,8 +139,7 @@ BYTE constraint(int value)
     }
 }
 
-RGBTRIPLE generate_rgb(int red, int green, int blue)
-{
+RGBTRIPLE generate_rgb(int red, int green, int blue) {
     RGBTRIPLE rgb;
     rgb.rgbtRed = constraint(red);
     rgb.rgbtGreen = constraint(green);
@@ -169,36 +147,30 @@ RGBTRIPLE generate_rgb(int red, int green, int blue)
     return rgb;
 }
 
-void brighten(int height, int width, RGBTRIPLE ** image, int unit)
-{
+void brighten(int height, int width, RGBTRIPLE **image, int unit) {
     // Loop through each pixel in the original image
-    for (int i = 0; i < height; i++)
-    {
-        for (int j = 0; j < width; j++)
-        {
-            image[i][j] = generate_rgb((int)image[i][j].rgbtRed + unit,
-                                      (int)image[i][j].rgbtGreen + unit,
-                                      (int)image[i][j].rgbtBlue + unit);
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            image[i][j] = generate_rgb((int) image[i][j].rgbtRed + unit,
+                                       (int) image[i][j].rgbtGreen + unit,
+                                       (int) image[i][j].rgbtBlue + unit);
         }
     }
 }
 
-void saturate(int height, int width, RGBTRIPLE ** image, int unit)
-{
+void saturate(int height, int width, RGBTRIPLE **image, int unit) {
     // Loop through each pixel in the original image
-    for (int i = 0; i < height; i++)
-    {
-        for (int j = 0; j < width; j++)
-        {
-            image[i][j] = generate_rgb((int)image[i][j].rgbtRed * (100 + unit) / 100,
-                                       (int)image[i][j].rgbtGreen * (100 + unit) / 100,
-                                       (int)image[i][j].rgbtBlue * (100 + unit) / 100);
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            image[i][j] = generate_rgb((int) image[i][j].rgbtRed * (100 + unit) / 100,
+                                       (int) image[i][j].rgbtGreen * (100 + unit) / 100,
+                                       (int) image[i][j].rgbtBlue * (100 + unit) / 100);
         }
     }
 }
 
 //threshold is a double from 0.0 to 1.0
-void thresholdFilter(int height, int width, RGBTRIPLE ** image, double threshold){
+void thresholdFilter(int height, int width, RGBTRIPLE **image, double threshold) {
     double rbgThreshold = 255 * threshold;
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
@@ -218,21 +190,30 @@ void thresholdFilter(int height, int width, RGBTRIPLE ** image, double threshold
 }
 
 //colorRGB is a double array with 3 elements, representing 3 rgb colors
-void colorFilter(int height, int width, RGBTRIPLE **image, double const colorRGB[])
-{
+void colorFilter(int height, int width, RGBTRIPLE **image, double const colorRGB[]) {
     double redFactor = 1 + colorRGB[0] / 255;
     double greenFactor = 1 + colorRGB[1] / 255;
     double blueFactor = 1 + colorRGB[2] / 255;
-    for (int i = 0; i < height; i++)
-    {
-        for (int j = 0; j < width; j++)
-        {
-            int newRed = (int)(image[i][j].rgbtRed * redFactor);
-            int newGreen = (int)(image[i][j].rgbtGreen * greenFactor);
-            int newBlue = (int)(image[i][j].rgbtBlue * blueFactor);
-            image[i][j].rgbtRed = (BYTE)constraint(newRed);
-            image[i][j].rgbtGreen = (BYTE)constraint(newGreen);
-            image[i][j].rgbtBlue = (BYTE)constraint(newBlue);
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            int newRed = (int) (image[i][j].rgbtRed * redFactor);
+            int newGreen = (int) (image[i][j].rgbtGreen * greenFactor);
+            int newBlue = (int) (image[i][j].rgbtBlue * blueFactor);
+            image[i][j].rgbtRed = (BYTE) constraint(newRed);
+            image[i][j].rgbtGreen = (BYTE) constraint(newGreen);
+            image[i][j].rgbtBlue = (BYTE) constraint(newBlue);
+        }
+    }
+}
+
+//invert colour
+void invert(int height, int width, RGBTRIPLE **image) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+
+            image[i][j].rgbtBlue = 255- image[i][j].rgbtBlue;
+            image[i][j].rgbtRed = 255 - image[i][j].rgbtRed;
+            image[i][j].rgbtGreen = 255 - image[i][j].rgbtGreen;
         }
     }
 }

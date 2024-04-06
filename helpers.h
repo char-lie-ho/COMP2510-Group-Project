@@ -22,3 +22,4 @@ void thresholdFilter(int height, int width, RGBTRIPLE ** image, double threshold
 // combine 2 same size image together, image blend
 void colorFilter(int height, int width, RGBTRIPLE **image, double const color[]);
 
+void invert(int height, int width, RGBTRIPLE **image);

@@ -153,7 +153,7 @@ int main() {
     snprintf(filePath, sizeof(filePath), "../image/%s.bmp", fileName);
     bmp = read_bmp(filePath);
     printf("Please choose a prefer way to process the picture (Enter a number):\n");
-    printf("1.grayScale 2.reflect 3.sepia 4.brighten 5.blur 6.saturate 7.thresholdFilter 8.colorFilter\n");
+    printf("1.grayScale 2.reflect 3.sepia 4.brighten 5.blur 6.saturate 7.thresholdFilter 8.colorFilter 9.invert\n");
     scanf("%d", &userChoice);
 
     switch (userChoice) {
@@ -184,7 +184,7 @@ int main() {
             break;
         case 6:
             printf("Enter a positive number to change the saturation:\n");
-            while (scanf("%d", &saturateFactor) != 1 ) {
+            while (scanf("%d", &saturateFactor) != 1) {
                 printf("It is not an integer, try again:\n");
                 while (getchar() != '\n');
             }
@@ -209,6 +209,10 @@ int main() {
             }
             colorFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, COLOR[colorFilterChoice - 1]);
             snprintf(processedFilePath, sizeof(filePath), "../image/%s-colorFilter.bmp", fileName);
+            break;
+        case 9:
+            invert(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image);
+            snprintf(processedFilePath, sizeof(filePath), "../image/%s-invert.bmp", fileName);
             break;
     }
     write_bmp(processedFilePath, bmp);
