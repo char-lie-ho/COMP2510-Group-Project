@@ -1,6 +1,4 @@
 #include <malloc.h>
-#include <string.h>
-#include <ctype.h>
 #include "helpers.h"
 #include "math.h"
 #include "stdio.h"

@@ -48,7 +48,7 @@ bmp_data read_bmp(char *file_name) {
     int width = bmp.dib_header.bV5Width;
     int height = bmp.dib_header.bV5Height;
 
-    printf("width: %d, height: %d", width, height);
+    printf("width: %d, height: %d \n", width, height);
 
     // Determine padding for scanlines
     int padding = (4 - (width * sizeof(RGBTRIPLE)) % 4) % 4;
@@ -150,11 +150,9 @@ int main() {
 
     printf("Please enter the file name:\n");
     scanf("%s", fileName);
-    printf("1");
     snprintf(filePath, sizeof(filePath), "../image/%s.bmp", fileName);
     bmp = read_bmp(filePath);
-    printf("2");
-    printf("Please choose a prefer way to process the picture(Enter a number):\n");
+    printf("Please choose a prefer way to process the picture (Enter a number):\n");
     printf("1.grayScale 2.reflect 3.sepia 4.brighten 5.blur 6.saturate 7.thresholdFilter 8.colorFilter\n");
     scanf("%d", &userChoice);
 
@@ -215,34 +213,4 @@ int main() {
     }
     write_bmp(processedFilePath, bmp);
     free_bmp(bmp);
-
-
-
-//    bmp = read_bmp("../image/sky.bmp");
-//    blur(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image);
-//    write_bmp("../image/sky-blur.bmp", bmp);
-//    free_bmp(bmp);
-//
-//    bmp = read_bmp("../image/sky.bmp");
-//    thresholdFilter(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 0.5);
-//    write_bmp("../image/sky-thresholdFilter.bmp", bmp);
-//    free_bmp(bmp);
-//
-//    bmp = read_bmp("../image/cat.bmp");
-//    brighten(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 50);
-//    write_bmp("../image/cat-brighter.bmp", bmp);
-//    free_bmp(bmp);
-//
-//
-//    bmp = read_bmp("../image/cat.bmp");
-//    brighten(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, -50);
-//    write_bmp("../image/cat-dimmer.bmp", bmp);
-//    free_bmp(bmp);
-//
-//
-//    bmp = read_bmp("../image/cat.bmp");
-//    saturate(bmp.dib_header.bV5Height, bmp.dib_header.bV5Width, bmp.image, 20);
-//    write_bmp("../image/cat-saturater.bmp", bmp);
-//    free_bmp(bmp);
-
 }
