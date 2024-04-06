@@ -2,8 +2,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "helpers.h"
-#include <string.h>
-#include <ctype.h>
 
 #define COLOR_NUMBER 7
 #define RGB_COLOR_VOLUME 13
@@ -29,6 +27,13 @@ bmp_data read_bmp(char *file_name) {
     // Obtain the Bitmap File header and DIB header(V5)
     if (fread(&bmp.bmp_header, sizeof(BITMAPFILEHEADER), 1, inputFile) != 1) {
         printf("Error reading BMP header\n");
+        fclose(inputFile);
+        return bmp;
+    }
+
+    // Check if the file is BMP
+    if (bmp.bmp_header.bfType != 0x4D42) {
+        printf("Unexpected signature: not BMP\n");
         fclose(inputFile);
         return bmp;
     }
