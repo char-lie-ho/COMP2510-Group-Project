@@ -21,13 +21,6 @@ typedef struct
 } __attribute__((__packed__))
         BITMAPFILEHEADER;
 
-
-// Define the BITMAPV5HEADER structure
-typedef uint8_t BYTE;
-typedef uint32_t DWORD;
-typedef int32_t LONG;
-typedef uint16_t WORD;
-
 // Define the BITMAPV5HEADER structure
 typedef struct {
     DWORD bV5Size;
