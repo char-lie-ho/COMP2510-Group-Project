@@ -2,6 +2,20 @@
 This group project for COMP2510 is inspired by a topic from the CS50 course. 
 We have expanded beyond the original scope by managing memory allocation, utilizing pointers, incorporating File I/O, and implementing various functions to apply filters to BMP images.
 
+<img src="image/cat.bmp" width="300">
+<img src="image/cat-grayscale.bmp" width="300">
+<img src="image/cat-reflect.bmp" width="300">
+<img src="image/cat-sepia.bmp" width="300">
+<img src="image/cat-brighten.bmp" width="300">
+<img src="image/cat-blur.bmp" width="300">
+<img src="image/cat-saturate.bmp" width="300">
+<img src="image/cat-thresholdFilter.bmp" width="300">
+<img src="image/cat-colorFilter.bmp" width="300">
+<img src="image/cat-invert.bmp" width="300">
+
+
+
+
 ## Key Features: 
 
 The BMP Image Converter supports various filters that can be applied to images:
